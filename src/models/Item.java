@@ -12,6 +12,19 @@ public class Item {
     private String photo;
     private ItemStatus status;
 
+    public Item() {
+    }
+
+    public Item(int id, String name, float price, float promotionalPrice, float quantity, String photo, ItemStatus status) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.promotionalPrice = promotionalPrice;
+        this.quantity = quantity;
+        this.photo = photo;
+        this.status = status;
+    }
+
     public int getId() {
         return id;
     }

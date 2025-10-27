@@ -14,4 +14,17 @@ public enum OrderStatus {
     private OrderStatus(int code) {
         this.code = code;
     }
+
+    public int getCode() {
+        return code;
+    }
+
+    public static OrderStatus fromCode(int code) {
+        for (OrderStatus status : OrderStatus.values()) {
+            if (status.getCode() == code) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Código inválido para OrderStatus: " + code);
+    }
 }

@@ -16,4 +16,13 @@ public enum PaymentMethod {
     public String getCode() {
         return code;
     }
+
+    public static PaymentMethod fromCode(String code) {
+        for (PaymentMethod status : PaymentMethod.values()) {
+            if (status.getCode() == code) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Código inválido para PaymentMethod: " + code);
+    }
 }

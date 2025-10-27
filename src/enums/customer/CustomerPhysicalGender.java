@@ -11,4 +11,17 @@ public enum CustomerPhysicalGender {
     CustomerPhysicalGender(int code) {
         this.code = code;
     }
+
+    public int getCode() {
+        return code;
+    }
+
+    public static CustomerPhysicalGender fromCode(int code) {
+        for (CustomerPhysicalGender status : CustomerPhysicalGender.values()) {
+            if (status.getCode() == code) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Código inválido para CustomerPhysicalGender: " + code);
+    }
 }

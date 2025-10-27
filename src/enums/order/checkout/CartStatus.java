@@ -10,4 +10,17 @@ public enum CartStatus  {
     CartStatus(int code) {
         this.code = code;
     }
+
+    public int getCode() {
+        return code;
+    }
+
+    public static CartStatus fromCode(int code) {
+        for (CartStatus status : CartStatus.values()) {
+            if (status.getCode() == code) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Código inválido para CartStatus: " + code);
+    }
 }

@@ -10,6 +10,16 @@ public class OrderHistory {
     private String comment;
     private Date timestamp;
 
+    public OrderHistory() {}
+
+    public OrderHistory(int id, Order order, OrderStatus status, String comment, Date timestamp) {
+        this.id = id;
+        this.order = order;
+        this.status = status;
+        this.comment = comment;
+        this.timestamp = timestamp;
+    }
+
     public int getId() {
         return id;
     }

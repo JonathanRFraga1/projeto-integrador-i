@@ -20,6 +20,32 @@ public class Order {
     private OrderStatus status;
     private Date orderDate;
 
+    public Order() {}
+
+    public Order(
+            int id,
+            Customer customer,
+            int cartId,
+            Seller seller,
+            float totalAmount,
+            Payment payment,
+            ArrayList<OrderItem> orderItems,
+            Shipment shipment,
+            OrderStatus status,
+            Date orderDate
+    ) {
+        this.id = id;
+        this.customer = customer;
+        this.cartId = cartId;
+        this.seller = seller;
+        this.totalAmount = totalAmount;
+        this.payment = payment;
+        this.orderItems = orderItems;
+        this.shipment = shipment;
+        this.status = status;
+        this.orderDate = orderDate;
+    }
+
     public int getId() {
         return id;
     }

@@ -8,6 +8,17 @@ public class OrderItem {
     private float itemPrice;
     private float quantity;
 
+    public OrderItem() {}
+
+    public OrderItem(int id, int orderId, int itemId, String itemName, float itemPrice, float itemQuantity) {
+        this.id = id;
+        this.orderId = orderId;
+        this.ItemId = itemId;
+        this.itemName = itemName;
+        this.itemPrice = itemPrice;
+        this.quantity = itemQuantity;
+    }
+
     public int getId() {
         return id;
     }

@@ -3,6 +3,7 @@ package dao.item;
 import dao.GenericDAO;
 import enums.item.ItemStatus;
 import models.Item;
+
 import java.sql.*;
 
 public class ItemDAO extends GenericDAO<Item> {
@@ -27,34 +28,40 @@ public class ItemDAO extends GenericDAO<Item> {
 
     @Override
     public void insert(Item item) throws SQLException {
-        connect();
-        String sql = "INSERT INTO items (name, price, promotional_price, quantity, photo, status) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, item.getName());
-            stmt.setFloat(2, item.getPrice());
-            stmt.setFloat(3, item.getPromotionalPrice());
-            stmt.setFloat(4, item.getQuantity());
-            stmt.setString(5, item.getPhoto());
-            stmt.setInt(6, item.getStatus().getCode());
-            stmt.executeUpdate();
+        try {
+            connect();
+            String sql = "INSERT INTO items (name, price, promotional_price, quantity, photo, status) VALUES (?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, item.getName());
+                stmt.setFloat(2, item.getPrice());
+                stmt.setFloat(3, item.getPromotionalPrice());
+                stmt.setFloat(4, item.getQuantity());
+                stmt.setString(5, item.getPhoto());
+                stmt.setInt(6, item.getStatus().getCode());
+                stmt.executeUpdate();
+            }
+        } finally {
+            disconnect();
         }
-        disconnect();
     }
 
     @Override
     public void update(Item item) throws SQLException {
-        connect();
-        String sql = "UPDATE items SET name = ?, price = ?, promotional_price = ?, quantity = ?, photo = ?, status = ? WHERE id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, item.getName());
-            stmt.setFloat(2, item.getPrice());
-            stmt.setFloat(3, item.getPromotionalPrice());
-            stmt.setFloat(4, item.getQuantity());
-            stmt.setString(5, item.getPhoto());
-            stmt.setInt(6, item.getStatus().getCode());
-            stmt.setInt(7, item.getId());
-            stmt.executeUpdate();
+        try {
+            connect();
+            String sql = "UPDATE items SET name = ?, price = ?, promotional_price = ?, quantity = ?, photo = ?, status = ? WHERE id = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, item.getName());
+                stmt.setFloat(2, item.getPrice());
+                stmt.setFloat(3, item.getPromotionalPrice());
+                stmt.setFloat(4, item.getQuantity());
+                stmt.setString(5, item.getPhoto());
+                stmt.setInt(6, item.getStatus().getCode());
+                stmt.setInt(7, item.getId());
+                stmt.executeUpdate();
+            }
+        } finally {
+            disconnect();
         }
-        disconnect();
     }
 }

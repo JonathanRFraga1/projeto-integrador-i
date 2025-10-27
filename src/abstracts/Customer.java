@@ -9,6 +9,16 @@ public abstract class Customer {
     private String email;
     private CustomerStatus status;
 
+    protected Customer() {}
+
+    protected Customer(int id, String name, int addressId, String email, CustomerStatus status) {
+        this.id = id;
+        this.name = name;
+        this.addressId = addressId;
+        this.email = email;
+        this.status = status;
+    }
+
     public int getId() {
         return id;
     }

@@ -12,6 +12,21 @@ public class Payment {
     private float shippingPrice;
     private int installments = 1;
 
+    public Payment() {
+
+    }
+
+    public Payment(int paymentId, int orderId, float amount, PaymentMethod paymentMethod, float additions, float discounts, float shippingPrice, int installments) {
+        this.paymentId = paymentId;
+        this.orderId = orderId;
+        this.amount = amount;
+        this.paymentMethod = paymentMethod;
+        this.additions = additions;
+        this.discounts = discounts;
+        this.shippingPrice = shippingPrice;
+        this.installments = installments;
+    }
+
     public int getPaymentId() {
         return paymentId;
     }

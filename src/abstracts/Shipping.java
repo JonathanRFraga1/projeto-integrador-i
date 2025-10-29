@@ -7,6 +7,14 @@ public abstract class Shipping {
     private float shippingCoast = 0;
     private Date estimatedDate;
 
+    public Shipping() {
+    }
+
+    public Shipping(float shippingCoast, Date estimatedDate) {
+        this.shippingCoast = shippingCoast;
+        this.estimatedDate = estimatedDate;
+    }
+
     public float getShippingCoast() {
         return shippingCoast;
     }
@@ -23,7 +31,11 @@ public abstract class Shipping {
         this.estimatedDate = estimatedDate;
     }
 
-    public float calculateCoast() {
+    public String toJson() {
+        return "{}";
+    }
+
+    public float calculateCost() {
         return 0;
     }
 }

@@ -43,7 +43,7 @@ public class OrderDAO extends GenericDAO<Order> {
     }
 
     @Override
-    public void insert(Order order) throws SQLException {
+    public int insert(Order order) throws SQLException {
         try {
             connect();
             String sql = "INSERT INTO orders (customer_id, customer_type, seller_id, total_amount, status) VALUES (?, ?, ?, ?, ?)";
@@ -67,6 +67,13 @@ public class OrderDAO extends GenericDAO<Order> {
                 stmt.setFloat(4, order.getTotalAmount());
                 stmt.setInt(5, order.getStatus().getCode());
                 stmt.executeUpdate();
+
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                    throw new SQLException("Falha ao obter ID gerado");
+                }
             }
         } finally {
             disconnect();

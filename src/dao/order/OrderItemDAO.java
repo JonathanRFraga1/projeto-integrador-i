@@ -24,7 +24,7 @@ public class OrderItemDAO extends GenericDAO<OrderItem> {
     }
 
     @Override
-    public void insert(OrderItem orderItem) throws SQLException {
+    public int insert(OrderItem orderItem) throws SQLException {
         try {
             connect();
             String sql = "INSERT INTO order_items (order_id, item_id, item_name, item_price, quantity) VALUES (?, ?, ?, ?, ?)";
@@ -35,6 +35,13 @@ public class OrderItemDAO extends GenericDAO<OrderItem> {
                 stmt.setFloat(4, orderItem.getItemPrice());
                 stmt.setFloat(5, orderItem.getQuantity());
                 stmt.executeUpdate();
+
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                    throw new SQLException("Falha ao obter ID gerado");
+                }
             }
         } finally {
             disconnect();

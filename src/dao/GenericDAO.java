@@ -83,6 +83,6 @@ public abstract class GenericDAO<T> {
     }
 
     // Os métodos insert/update ficam a cargo das subclasses
-    public abstract void insert(T entity) throws SQLException;
+    public abstract int insert(T entity) throws SQLException;
     public abstract void update(T entity) throws SQLException;
 }

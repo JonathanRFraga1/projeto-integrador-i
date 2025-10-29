@@ -29,7 +29,7 @@ public class OrderHistoryDAO extends GenericDAO<OrderHistory> {
     }
 
     @Override
-    public void insert(OrderHistory orderHistory) throws SQLException {
+    public int insert(OrderHistory orderHistory) throws SQLException {
         try {
             connect();
             String sql = "INSERT INTO orders_history (order_id, comment, status) VALUES (?, ?, ?)";
@@ -38,6 +38,13 @@ public class OrderHistoryDAO extends GenericDAO<OrderHistory> {
                 stmt.setString(2, orderHistory.getComment());
                 stmt.setInt(3, orderHistory.getStatus().getCode());
                 stmt.executeUpdate();
+
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                    throw new SQLException("Falha ao obter ID gerado");
+                }
             }
         } finally {
             disconnect();

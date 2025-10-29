@@ -29,7 +29,7 @@ public class CustomerPhysicalDAO extends GenericDAO<CustomerPhysical> {
     }
 
     @Override
-    public void insert(CustomerPhysical customerPhysical) throws SQLException {
+    public int insert(CustomerPhysical customerPhysical) throws SQLException {
         try {
             connect();
             String sql = "INSERT INTO customers_physical (name, email, cpf, birth_date, gender, status) VALUES (?, ?, ?, ?, ?, ?)";
@@ -41,6 +41,13 @@ public class CustomerPhysicalDAO extends GenericDAO<CustomerPhysical> {
                 stmt.setInt(5, customerPhysical.getGender().getCode());
                 stmt.setInt(6, customerPhysical.getStatus().getCode());
                 stmt.executeUpdate();
+
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                    throw new SQLException("Falha ao obter ID gerado");
+                }
             }
         } finally {
             disconnect();

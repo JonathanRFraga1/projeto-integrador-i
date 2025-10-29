@@ -26,7 +26,7 @@ public class CustomerLegalDAO extends GenericDAO<CustomerLegal> {
     }
 
     @Override
-    public void insert(CustomerLegal customerLegal) throws SQLException {
+    public int insert(CustomerLegal customerLegal) throws SQLException {
         try {
             connect();
             String sql = "INSERT INTO customers_legal (name, email, cnpj, responsible_name, status) VALUES (?, ?, ?, ?, ?)";
@@ -37,6 +37,13 @@ public class CustomerLegalDAO extends GenericDAO<CustomerLegal> {
                 stmt.setString(4, customerLegal.getResponsibleName());
                 stmt.setInt(5, customerLegal.getStatus().getCode());
                 stmt.executeUpdate();
+
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                    throw new SQLException("Falha ao obter ID gerado");
+                }
             }
         } finally {
             disconnect();

@@ -10,6 +10,18 @@ public class Checkout {
     public Cart cart;
     public Payment payment;
 
+    public Checkout() {
+
+    }
+
+    public Checkout(float amount, int sellerId, Customer customer, Cart cart, Payment payment) {
+        this.amount = amount;
+        this.sellerId = sellerId;
+        this.customer = customer;
+        this.cart = cart;
+        this.payment = payment;
+    }
+
     public float getAmount() {
         return amount;
     }

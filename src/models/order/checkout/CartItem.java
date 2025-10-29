@@ -6,6 +6,17 @@ public class CartItem {
     private int quantity;
     private float subtotal;
 
+    public CartItem() {
+
+    }
+
+    public CartItem(int id, int itemId, int quantity, float subtotal) {
+        this.id = id;
+        this.itemId = itemId;
+        this.quantity = quantity;
+        this.subtotal = subtotal;
+    }
+
     public int getId() {
         return id;
     }

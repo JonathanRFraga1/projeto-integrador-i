@@ -2,11 +2,11 @@ package models.order.checkout;
 
 import abstracts.Customer;
 import enums.order.checkout.CartStatus;
-import enums.customer.CustomerType;
 
 import java.util.ArrayList;
 
 public class Cart {
+    private int id;
     private Customer customer;
     private ArrayList<CartItem> cartItems;
     private CartStatus cartStatus;
@@ -15,10 +15,19 @@ public class Cart {
 
     }
 
-    public Cart(Customer customer, ArrayList<CartItem> cartItems, CartStatus cartStatus) {
+    public Cart(int id, Customer customer, ArrayList<CartItem> cartItems, CartStatus cartStatus) {
+        this.id = id;
         this.customer = customer;
         this.cartItems = cartItems;
         this.cartStatus = cartStatus;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Customer getCustomer() {

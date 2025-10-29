@@ -21,13 +21,12 @@ public class CartDAO extends GenericDAO<Cart> {
     protected Cart mapResultSetToEntity(ResultSet rs) throws SQLException {
         Cart cart = new Cart();
 
-        Customer customer;
         CustomerType customerType = CustomerType.fromCode(rs.getInt("customer_type"));
-        switch (customerType) {
-            case CustomerType.CUSTOMER_LEGAL -> customer = new CustomerLegal();
-            case CustomerType.CUSTOMER_PHYSICAL ->  customer = new CustomerPhysical();
+        Customer customer = switch (customerType) {
+            case CustomerType.CUSTOMER_LEGAL -> new CustomerLegal();
+            case CustomerType.CUSTOMER_PHYSICAL -> new CustomerPhysical();
             default -> throw new IllegalArgumentException("Tipo de customer desconhecido");
-        }
+        };
 
         customer.setId(rs.getInt("customer_id"));
         cart.setCustomer(customer);
@@ -38,7 +37,7 @@ public class CartDAO extends GenericDAO<Cart> {
     }
 
     @Override
-    public void insert(Cart cart) throws SQLException {
+    public int insert(Cart cart) throws SQLException {
         try {
             connect();
             String sql = "INSERT INTO carts (customer_id, cart_status) VALUES (?, ?)";
@@ -46,6 +45,13 @@ public class CartDAO extends GenericDAO<Cart> {
                 stmt.setInt(1, cart.getCustomer().getId());
                 stmt.setInt(2, cart.getCartStatus().getCode());
                 stmt.executeUpdate();
+
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                    throw new SQLException("Falha ao obter ID gerado");
+                }
             }
         } finally {
             disconnect();

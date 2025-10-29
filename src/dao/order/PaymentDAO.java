@@ -17,7 +17,7 @@ public class PaymentDAO extends GenericDAO<Payment> {
     @Override
     protected Payment mapResultSetToEntity(ResultSet rs) throws SQLException {
         Payment payment = new Payment();
-        payment.setPaymentId(rs.getInt("id"));
+        payment.setId(rs.getInt("id"));
         payment.setOrderId(rs.getInt("order_id"));
         payment.setPaymentMethod(PaymentMethod.fromCode(rs.getString("payment_method")));
         payment.setAdditions(rs.getFloat("additions"));
@@ -29,7 +29,7 @@ public class PaymentDAO extends GenericDAO<Payment> {
     }
 
     @Override
-    public void insert(Payment payment) throws SQLException {
+    public int insert(Payment payment) throws SQLException {
         try {
             connect();
             String sql = "INSERT INTO order_payments (order_id, payment_method, additions, discounts, installments, shipping_price, amount) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -42,6 +42,13 @@ public class PaymentDAO extends GenericDAO<Payment> {
                 stmt.setFloat(6, payment.getShippingPrice());
                 stmt.setFloat(7, payment.getAmount());
                 stmt.executeUpdate();
+
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                    throw new SQLException("Falha ao obter ID gerado");
+                }
             }
         } finally {
             disconnect();
@@ -60,7 +67,7 @@ public class PaymentDAO extends GenericDAO<Payment> {
                 stmt.setInt(4, payment.getInstallments());
                 stmt.setFloat(5, payment.getShippingPrice());
                 stmt.setFloat(6, payment.getAmount());
-                stmt.setInt(7, payment.getPaymentId());
+                stmt.setInt(7, payment.getId());
                 stmt.executeUpdate();
             }
         }  finally {

@@ -3,7 +3,7 @@ package models.order;
 import enums.order.PaymentMethod;
 
 public class Payment {
-    private int paymentId;
+    private int id;
     private int orderId;
     private float amount;
     private PaymentMethod paymentMethod;
@@ -16,8 +16,8 @@ public class Payment {
 
     }
 
-    public Payment(int paymentId, int orderId, float amount, PaymentMethod paymentMethod, float additions, float discounts, float shippingPrice, int installments) {
-        this.paymentId = paymentId;
+    public Payment(int id, int orderId, float amount, PaymentMethod paymentMethod, float additions, float discounts, float shippingPrice, int installments) {
+        this.id = id;
         this.orderId = orderId;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
@@ -27,12 +27,12 @@ public class Payment {
         this.installments = installments;
     }
 
-    public int getPaymentId() {
-        return paymentId;
+    public int getId() {
+        return id;
     }
 
-    public void setPaymentId(int paymentId) {
-        this.paymentId = paymentId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getOrderId() {

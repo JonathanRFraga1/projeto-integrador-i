@@ -1,30 +1,32 @@
 package models.order.checkout;
 
+import abstracts.Customer;
 import enums.order.checkout.CartStatus;
 import enums.customer.CustomerType;
 
 import java.util.ArrayList;
 
 public class Cart {
-    private int customerId;
-    private CustomerType customerType;
+    private Customer customer;
     private ArrayList<CartItem> cartItems;
     private CartStatus cartStatus;
 
-    public int getCustomerId() {
-        return customerId;
+    public Cart() {
+
     }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
+    public Cart(Customer customer, ArrayList<CartItem> cartItems, CartStatus cartStatus) {
+        this.customer = customer;
+        this.cartItems = cartItems;
+        this.cartStatus = cartStatus;
     }
 
-    public CustomerType getCustomerType() {
-        return customerType;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomerType(CustomerType customerType) {
-        this.customerType = customerType;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public ArrayList<CartItem> getCartItems() {

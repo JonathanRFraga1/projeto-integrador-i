@@ -3,7 +3,7 @@ package models.order;
 public class OrderItem {
     private int id;
     private int orderId;
-    private int ItemId;
+    private int itemId;
     private String itemName;
     private float itemPrice;
     private float quantity;
@@ -13,7 +13,7 @@ public class OrderItem {
     public OrderItem(int id, int orderId, int itemId, String itemName, float itemPrice, float itemQuantity) {
         this.id = id;
         this.orderId = orderId;
-        this.ItemId = itemId;
+        this.itemId = itemId;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
         this.quantity = itemQuantity;
@@ -36,11 +36,11 @@ public class OrderItem {
     }
 
     public int getItemId() {
-        return ItemId;
+        return itemId;
     }
 
     public void setItemId(int itemId) {
-        ItemId = itemId;
+        this.itemId = itemId;
     }
 
     public String getItemName() {

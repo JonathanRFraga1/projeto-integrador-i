@@ -1,7 +1,5 @@
 package enums.customer;
 
-import enums.item.ItemStatus;
-
 public enum CustomerStatus {
     INACTIVE(0),
     ACTIVE(1),

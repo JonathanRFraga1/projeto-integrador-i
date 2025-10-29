@@ -2,6 +2,7 @@ package models.order.checkout;
 
 public class CartItem {
     private int id;
+    private int cartId;
     private int itemId;
     private int quantity;
     private float subtotal;
@@ -10,8 +11,9 @@ public class CartItem {
 
     }
 
-    public CartItem(int id, int itemId, int quantity, float subtotal) {
+    public CartItem(int id, int cartId, int itemId, int quantity, float subtotal) {
         this.id = id;
+        this.cartId = cartId;
         this.itemId = itemId;
         this.quantity = quantity;
         this.subtotal = subtotal;
@@ -23,6 +25,14 @@ public class CartItem {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(int cartId) {
+        this.cartId = cartId;
     }
 
     public int getItemId() {

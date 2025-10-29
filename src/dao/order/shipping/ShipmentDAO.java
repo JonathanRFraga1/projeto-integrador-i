@@ -25,12 +25,11 @@ public class ShipmentDAO extends GenericDAO<Shipment> {
 
         String shipmentValues = rs.getString("shipment_values");
 
-        Shipping shipping;
-        switch (shipment.getShipmentType()) {
-            case ShipmentType.DELIVERY -> shipping = new ShippingDelivery(shipmentValues);
-            case ShipmentType.PICKUP -> shipping = new ShippingPickup(shipmentValues);
+        Shipping shipping = switch (shipment.getShipmentType()) {
+            case ShipmentType.DELIVERY -> new ShippingDelivery(shipmentValues);
+            case ShipmentType.PICKUP -> new ShippingPickup(shipmentValues);
             default -> throw new IllegalArgumentException("Tipo de shipping desconhecido");
-        }
+        };
 
         shipment.setShippingDetails(shipping);
 
@@ -38,7 +37,7 @@ public class ShipmentDAO extends GenericDAO<Shipment> {
     }
 
     @Override
-    public void insert(Shipment shipment) throws SQLException {
+    public int insert(Shipment shipment) throws SQLException {
         try {
             connect();
             String sql = "INSERT INTO order_shipments(order_id, amount, shipment_type, shipment_values) VALUES (?, ?, ?, ?)";
@@ -48,6 +47,13 @@ public class ShipmentDAO extends GenericDAO<Shipment> {
                 stmt.setString(3, shipment.getShipmentType().getCode());
                 stmt.setString(4, shipment.getShippingDetails().toJson());
                 stmt.executeUpdate();
+
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        return generatedKeys.getInt(1);
+                    }
+                    throw new SQLException("Falha ao obter ID gerado");
+                }
             }
         } finally {
             disconnect();

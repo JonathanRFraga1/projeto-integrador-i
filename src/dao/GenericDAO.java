@@ -13,9 +13,9 @@ public abstract class GenericDAO<T> {
     protected Connection connection;
 
     // --- CONFIGURAÇÃO DO BANCO ---
-    private final String URL = "jdbc:mysql://localhost:3306/salesdb";
+    private final String URL = "jdbc:mysql://localhost:3306/sales_order_module";
     private final String USER = "root";
-    private final String PASSWORD = "senha";
+    private final String PASSWORD = "181101";
 
     // --- MÉTODOS DE CONEXÃO ---
     protected void connect() throws SQLException {

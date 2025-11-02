@@ -4,6 +4,8 @@
  */
 package views;
 
+import controllers.MainController;
+
 import java.beans.PropertyVetoException;
 import javax.swing.JDesktopPane;
 
@@ -17,12 +19,14 @@ public class Main extends javax.swing.JFrame {
 
     private final JDesktopPane desktop = new JDesktopPane();
 
+    private final MainController mainController = new MainController(this);
+
     /**
      * Creates new form Main
      */
     public Main() {
         initComponents();
-         this.setContentPane(desktop);
+        this.setContentPane(desktop);
     }
 
     protected void createFrame() {
@@ -49,11 +53,12 @@ public class Main extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem11 = new javax.swing.JMenuItem();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        menuCreateDatabase = new javax.swing.JMenuItem();
+        menuCreateTables = new javax.swing.JMenuItem();
+        menuRunSeeds = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
@@ -62,6 +67,11 @@ public class Main extends javax.swing.JFrame {
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem9 = new javax.swing.JMenuItem();
         jMenuItem10 = new javax.swing.JMenuItem();
+        jMenu6 = new javax.swing.JMenu();
+        jMenuItem12 = new javax.swing.JMenuItem();
+        jMenuItem13 = new javax.swing.JMenuItem();
+        jMenuItem14 = new javax.swing.JMenuItem();
+        jMenuItem15 = new javax.swing.JMenuItem();
 
         jMenu1.setText("jMenu1");
 
@@ -69,28 +79,35 @@ public class Main extends javax.swing.JFrame {
 
         jMenuItem4.setText("jMenuItem4");
 
+        jMenuItem11.setText("jMenuItem11");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jMenu2.setText("Banco de Dados");
 
-        jMenuItem1.setText("Gerar Banco de Dados");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        menuCreateDatabase.setText("Gerar Banco de Dados");
+        menuCreateDatabase.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                menuCreateDatabaseActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem1);
+        jMenu2.add(menuCreateDatabase);
 
-        jMenuItem2.setText("Gerar Tabelas");
-        jMenu2.add(jMenuItem2);
-
-        jMenuItem5.setText("Popular Tabelas");
-        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+        menuCreateTables.setText("Gerar Tabelas");
+        menuCreateTables.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem5ActionPerformed(evt);
+                menuCreateTablesActionPerformed(evt);
             }
         });
-        jMenu2.add(jMenuItem5);
+        jMenu2.add(menuCreateTables);
+
+        menuRunSeeds.setText("Popular Tabelas");
+        menuRunSeeds.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuRunSeedsActionPerformed(evt);
+            }
+        });
+        jMenu2.add(menuRunSeeds);
 
         jMenuBar1.add(jMenu2);
 
@@ -126,6 +143,22 @@ public class Main extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu3);
 
+        jMenu6.setText("Relatórios");
+
+        jMenuItem12.setText("Pedidos");
+        jMenu6.add(jMenuItem12);
+
+        jMenuItem13.setText("Produtos mais vendidos");
+        jMenu6.add(jMenuItem13);
+
+        jMenuItem14.setText("Carrinhos Abandonados");
+        jMenu6.add(jMenuItem14);
+
+        jMenuItem15.setText("Vendedores");
+        jMenu6.add(jMenuItem15);
+
+        jMenuBar1.add(jMenu6);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -142,17 +175,21 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    private void menuCreateDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCreateDatabaseActionPerformed
+        mainController.handleGenerateDatabase();
+    }//GEN-LAST:event_menuCreateDatabaseActionPerformed
 
-    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+    private void menuRunSeedsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRunSeedsActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem5ActionPerformed
+    }//GEN-LAST:event_menuRunSeedsActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         createFrame();
     }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void menuCreateTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCreateTablesActionPerformed
+        mainController.handleRunTablesMigration();
+    }//GEN-LAST:event_menuCreateTablesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -185,16 +222,22 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem11;
+    private javax.swing.JMenuItem jMenuItem12;
+    private javax.swing.JMenuItem jMenuItem13;
+    private javax.swing.JMenuItem jMenuItem14;
+    private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JMenuItem menuCreateDatabase;
+    private javax.swing.JMenuItem menuCreateTables;
+    private javax.swing.JMenuItem menuRunSeeds;
     // End of variables declaration//GEN-END:variables
 }

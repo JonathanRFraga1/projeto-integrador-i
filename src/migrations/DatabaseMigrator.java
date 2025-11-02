@@ -36,8 +36,15 @@ public class DatabaseMigrator {
     }
 
     public void runTablesMigration() throws SQLException, IOException {
+        this.runMigration(PATH_TABLES_MIGRATION);
+    }
 
-        String scriptCompleto = loadSqlScript(PATH_TABLES_MIGRATION);
+    public void runSeedsMigration() throws SQLException, IOException {
+        this.runMigration(PATH_SEEDS_MIGRATION);
+    }
+
+    private void runMigration(String filePath) throws SQLException, IOException {
+        String scriptCompleto = loadSqlScript(filePath);
 
         try (Connection conn = DriverManager.getConnection(URI + "/" + DB_NAME, USER, PASSWORD);
              Statement stmt = conn.createStatement()) {

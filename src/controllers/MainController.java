@@ -18,39 +18,66 @@ public class MainController {
 
     public void handleGenerateDatabase() {
         try {
-            System.out.println("Controller: Recebeu evento para criar banco.");
             databaseMigrator.createDatabase();
 
-            JOptionPane.showMessageDialog(mainFrame,
-                    "Banco de dados 'sales_order_module' criado/verificado com sucesso!",
-                    "Sucesso",
-                    JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(
+                mainFrame,
+                "Banco de dados criado/verificado com sucesso!",
+                "Sucesso",
+                JOptionPane.INFORMATION_MESSAGE
+            );
 
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(mainFrame,
-                    "Erro ao criar banco de dados:\n" + e.getMessage(),
-                    "Erro de Migração",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                mainFrame,
+                "Erro ao criar banco de dados:\n" + e.getMessage(),
+                "Erro de Migração",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 
     public void handleRunTablesMigration() {
         try {
-            System.out.println("Controller: Recebeu evento para criar tabelas.");
             databaseMigrator.runTablesMigration();
 
-            JOptionPane.showMessageDialog(mainFrame,
-                    "Tabelas criadas com sucesso no banco 'sales_order_module'!",
-                    "Sucesso",
-                    JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(
+                mainFrame,
+                "Tabelas criadas com sucesso!",
+                "Sucesso",
+                JOptionPane.INFORMATION_MESSAGE
+            );
 
         } catch (SQLException | IOException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(mainFrame,
-                    "Erro ao executar script de tabelas:\n" + e.getMessage(),
-                    "Erro de Migração",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                mainFrame,
+                "Erro ao executar script de tabelas:\n" + e.getMessage(),
+                "Erro de Migração",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    public void handleRunSeedsMigration() {
+        try {
+            databaseMigrator.runSeedsMigration();
+
+            JOptionPane.showMessageDialog(
+                mainFrame,
+                "Tabelas populadas com sucesso!",
+                "Sucesso",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                mainFrame,
+                "Erro ao executar script de população das tabelas:\n" + e.getMessage(),
+                "Erro de Migração",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 }

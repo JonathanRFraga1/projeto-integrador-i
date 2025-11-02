@@ -180,7 +180,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_menuCreateDatabaseActionPerformed
 
     private void menuRunSeedsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRunSeedsActionPerformed
-        // TODO add your handling code here:
+        mainController.handleRunSeedsMigration();
     }//GEN-LAST:event_menuRunSeedsActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed

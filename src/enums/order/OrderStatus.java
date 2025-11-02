@@ -7,7 +7,7 @@ public enum OrderStatus {
     READY_TO_DELIVERING(4),
     SHIPPED(5),
     DELIVERED(6),
-    CLOSED(8);
+    CLOSED(7);
     
     private final int code;
 

@@ -40,10 +40,23 @@ public class CartDAO extends GenericDAO<Cart> {
     public int insert(Cart cart) throws SQLException {
         try {
             connect();
-            String sql = "INSERT INTO carts (customer_id, cart_status) VALUES (?, ?)";
+            String sql = "INSERT INTO carts (customer_id, customer_type, cart_status) VALUES (?, ?, ?)";
+
+            Customer customer = cart.getCustomer();
+            int customerType;
+
+            if (customer instanceof CustomerLegal) {
+                customerType = CustomerType.CUSTOMER_LEGAL.getCode();
+            } else if (customer instanceof CustomerPhysical) {
+                customerType = CustomerType.CUSTOMER_PHYSICAL.getCode();
+            } else {
+                throw new IllegalArgumentException("Tipo de cliente desconhecido: " + customer.getClass().getName());
+            }
+
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setInt(1, cart.getCustomer().getId());
-                stmt.setInt(2, cart.getCartStatus().getCode());
+                stmt.setInt(1, customer.getId());
+                stmt.setInt(2, customerType);
+                stmt.setInt(3, cart.getCartStatus().getCode());
                 stmt.executeUpdate();
 
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {

@@ -2,9 +2,8 @@ package dao.customer;
 
 import dao.GenericDAO;
 import enums.customer.CustomerStatus;
-import models.customer.CustomerLegal;
-
 import java.sql.*;
+import models.customer.CustomerLegal;
 
 public class CustomerLegalDAO extends GenericDAO<CustomerLegal> {
 

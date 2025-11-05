@@ -10,7 +10,7 @@ import java.beans.PropertyVetoException;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import views.customers.CustomerPhysicalView;
-
+import views.customers.CustomerLegalView;
 /**
  *
  * @author jonat
@@ -129,6 +129,11 @@ public class Main extends javax.swing.JFrame {
         jMenu4.add(jMenuItem6);
 
         jMenuItem7.setText("Pessoa Jurídica");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem7);
 
         jMenu3.add(jMenu4);
@@ -195,6 +200,10 @@ public class Main extends javax.swing.JFrame {
     private void menuCreateTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCreateTablesActionPerformed
         mainController.handleRunTablesMigration();
     }//GEN-LAST:event_menuCreateTablesActionPerformed
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        createFrame(new CustomerLegalView());
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     /**
      * @param args the command line arguments

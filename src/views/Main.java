@@ -8,6 +8,8 @@ import controllers.MainController;
 
 import java.beans.PropertyVetoException;
 import javax.swing.JDesktopPane;
+import javax.swing.JInternalFrame;
+import views.customers.CustomerPhysicalView;
 
 /**
  *
@@ -29,15 +31,18 @@ public class Main extends javax.swing.JFrame {
         this.setContentPane(desktop);
     }
 
-    protected void createFrame() {
+    protected void createFrame(JInternalFrame frame) {
         System.out.println("teste");
-        final CadastroClientePF frame = new CadastroClientePF();
-        frame.setVisible(true);
-        desktop.add(frame);
+        
         try {
             frame.setSelected(true);
             frame.setEnabled(true);
+             desktop.add(frame);
+            frame.setVisible(true);
         } catch (final PropertyVetoException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -184,7 +189,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_menuRunSeedsActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        createFrame();
+        createFrame(new CustomerPhysicalView());
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void menuCreateTablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCreateTablesActionPerformed

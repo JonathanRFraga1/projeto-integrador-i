@@ -53,7 +53,7 @@ public class CartDAO extends GenericDAO<Cart> {
                 throw new IllegalArgumentException("Tipo de cliente desconhecido: " + customer.getClass().getName());
             }
 
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setInt(1, customer.getId());
                 stmt.setInt(2, customerType);
                 stmt.setInt(3, cart.getCartStatus().getCode());

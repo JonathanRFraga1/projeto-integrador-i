@@ -33,11 +33,11 @@ public class CustomerPhysicalDAO extends GenericDAO<CustomerPhysical> {
         try {
             connect();
             String sql = "INSERT INTO customers_physical (name, email, cpf, birth_date, gender, status) VALUES (?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, customerPhysical.getName());
                 stmt.setString(2, customerPhysical.getEmail());
-                stmt.setString(3, customerPhysical.getCpf());
-                stmt.setDate(4, (Date) customerPhysical.getBirthDate());
+                stmt.setString(3, customerPhysical.getCpf().replaceAll("\\D", ""));
+                stmt.setDate(4, new java.sql.Date(customerPhysical.getBirthDate().getTime()));
                 stmt.setInt(5, customerPhysical.getGender().getCode());
                 stmt.setInt(6, customerPhysical.getStatus().getCode());
                 stmt.executeUpdate();

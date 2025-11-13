@@ -27,7 +27,7 @@ public class CartItemDAO extends GenericDAO<CartItem> {
         try {
             connect();
             String sql = "INSERT INTO cart_items (cart_id, item_id, quantity, subtotal) VALUES (?, ?, ?, ?)";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setInt(1, cartItem.getCartId());
                 stmt.setInt(2, cartItem.getItemId());
                 stmt.setInt(3, cartItem.getQuantity());

@@ -28,7 +28,7 @@ public class OrderItemDAO extends GenericDAO<OrderItem> {
         try {
             connect();
             String sql = "INSERT INTO order_items (order_id, item_id, item_name, item_price, quantity) VALUES (?, ?, ?, ?, ?)";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setInt(1, orderItem.getOrderId());
                 stmt.setInt(2, orderItem.getItemId());
                 stmt.setString(3, orderItem.getItemName());

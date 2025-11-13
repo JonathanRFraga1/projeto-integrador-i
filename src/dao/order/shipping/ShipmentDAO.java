@@ -41,7 +41,7 @@ public class ShipmentDAO extends GenericDAO<Shipment> {
         try {
             connect();
             String sql = "INSERT INTO order_shipments(order_id, amount, shipment_type, shipment_values) VALUES (?, ?, ?, ?)";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setInt(1, shipment.getOrderId());
                 stmt.setFloat(2, shipment.getAmount());
                 stmt.setString(3, shipment.getShipmentType().getCode());

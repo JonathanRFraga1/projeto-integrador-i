@@ -33,7 +33,7 @@ public class OrderHistoryDAO extends GenericDAO<OrderHistory> {
         try {
             connect();
             String sql = "INSERT INTO orders_history (order_id, comment, status) VALUES (?, ?, ?)";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setInt(1, orderHistory.getOrder().getId());
                 stmt.setString(2, orderHistory.getComment());
                 stmt.setInt(3, orderHistory.getStatus().getCode());

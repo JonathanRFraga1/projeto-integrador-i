@@ -7,6 +7,7 @@ import models.order.Payment;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class PaymentDAO extends GenericDAO<Payment> {
     @Override
@@ -33,7 +34,7 @@ public class PaymentDAO extends GenericDAO<Payment> {
         try {
             connect();
             String sql = "INSERT INTO order_payments (order_id, payment_method, additions, discounts, installments, shipping_price, amount) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setInt(1, payment.getOrderId());
                 stmt.setString(2, payment.getPaymentMethod().getCode());
                 stmt.setFloat(3, payment.getAdditions());

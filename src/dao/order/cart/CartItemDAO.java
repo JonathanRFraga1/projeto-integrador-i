@@ -4,6 +4,8 @@ import dao.GenericDAO;
 import models.order.checkout.CartItem;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CartItemDAO extends GenericDAO<CartItem> {
     @Override
@@ -60,5 +62,28 @@ public class CartItemDAO extends GenericDAO<CartItem> {
         } finally {
             disconnect();
         }
+    }
+    
+    public ArrayList<CartItem> getByCartId(int cartId) throws SQLException {
+        ArrayList<CartItem> items = new ArrayList<>();
+        
+        try {
+            connect();
+            String sql = "SELECT * FROM cart_items WHERE cart_id = ?";
+            
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, cartId);
+                
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        items.add(mapResultSetToEntity(rs));
+                    }
+                }
+            }
+        } finally {
+            disconnect();
+        }
+        
+        return items;
     }
 }

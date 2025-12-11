@@ -8,8 +8,12 @@ import controllers.MainController;
 
 import java.beans.PropertyVetoException;
 import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import views.customers.CustomerPhysicalView;
+import views.orders.CreateBudgetView;
+import views.orders.ShowBudgetsListView;
+import views.orders.ShowOrdersListView;
 
 /**
  *
@@ -28,10 +32,11 @@ public class Main extends javax.swing.JFrame {
      */
     public Main() {
         initComponents();
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setContentPane(desktop);
     }
 
-    protected void createFrame(JInternalFrame frame) {
+    public void createFrame(JInternalFrame frame) {
         System.out.println("teste");
         
         try {
@@ -69,7 +74,7 @@ public class Main extends javax.swing.JFrame {
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenu5 = new javax.swing.JMenu();
-        jMenuItem8 = new javax.swing.JMenuItem();
+        menuCreateBudget = new javax.swing.JMenuItem();
         jMenuItem9 = new javax.swing.JMenuItem();
         jMenuItem10 = new javax.swing.JMenuItem();
         jMenu6 = new javax.swing.JMenu();
@@ -135,13 +140,28 @@ public class Main extends javax.swing.JFrame {
 
         jMenu5.setText("Pedidos de Venda");
 
-        jMenuItem8.setText("Novo Orçamento");
-        jMenu5.add(jMenuItem8);
+        menuCreateBudget.setText("Novo Orçamento");
+        menuCreateBudget.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuCreateBudgetActionPerformed(evt);
+            }
+        });
+        jMenu5.add(menuCreateBudget);
 
         jMenuItem9.setText("Listar Orçamentos");
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem9ActionPerformed(evt);
+            }
+        });
         jMenu5.add(jMenuItem9);
 
         jMenuItem10.setText("Listar Vendas");
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
         jMenu5.add(jMenuItem10);
 
         jMenu3.add(jMenu5);
@@ -196,6 +216,18 @@ public class Main extends javax.swing.JFrame {
         mainController.handleRunTablesMigration();
     }//GEN-LAST:event_menuCreateTablesActionPerformed
 
+    private void menuCreateBudgetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCreateBudgetActionPerformed
+        createFrame(new CreateBudgetView());
+    }//GEN-LAST:event_menuCreateBudgetActionPerformed
+
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        createFrame(new ShowBudgetsListView(this));
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
+
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        createFrame(new ShowOrdersListView());
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -239,8 +271,8 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItem9;
+    private javax.swing.JMenuItem menuCreateBudget;
     private javax.swing.JMenuItem menuCreateDatabase;
     private javax.swing.JMenuItem menuCreateTables;
     private javax.swing.JMenuItem menuRunSeeds;

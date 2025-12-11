@@ -4,6 +4,7 @@ import enums.item.ItemStatus;
 import enums.item.StockOperation;
 
 public class Item {
+
     private int id;
     private String name;
     private float price;
@@ -83,8 +84,10 @@ public class Item {
 
     public void updateStock(StockOperation operation, float stockValue) {
         switch (operation) {
-            case StockOperation.DECREASE ->  this.quantity -= stockValue;
-            case StockOperation.INCREASE ->  this.quantity += stockValue;
+            case StockOperation.DECREASE ->
+                this.quantity -= stockValue;
+            case StockOperation.INCREASE ->
+                this.quantity += stockValue;
         }
     }
 
@@ -96,5 +99,18 @@ public class Item {
         }
 
         return finalPrice;
+    }
+
+    @Override
+    public String toString() {
+        return "Item{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + ", price=" + price
+                + ", promotionalPrice=" + promotionalPrice
+                + ", quantity=" + quantity
+                + ", photo='" + photo + '\''
+                + ", status=" + status
+                + '}';
     }
 }

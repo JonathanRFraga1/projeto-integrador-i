@@ -46,7 +46,7 @@ public class OrderDAO extends GenericDAO<Order> {
     public int insert(Order order) throws SQLException {
         try {
             connect();
-            String sql = "INSERT INTO orders (customer_id, customer_type, seller_id, total_amount, status) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO orders (customer_id, customer_type, cart_id, seller_id, total_amount, status) VALUES (?, ?, ?, ?, ?, ?)";
 
             Customer customer = order.getCustomer();
 
@@ -63,9 +63,10 @@ public class OrderDAO extends GenericDAO<Order> {
             try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setInt(1, customer.getId());
                 stmt.setInt(2, customerType);
-                stmt.setInt(3, order.getSeller().getId());
-                stmt.setFloat(4, order.getTotalAmount());
-                stmt.setInt(5, order.getStatus().getCode());
+                stmt.setInt(3, order.getCartId());
+                stmt.setInt(4, order.getSeller().getId());
+                stmt.setFloat(5, order.getTotalAmount());
+                stmt.setInt(6, order.getStatus().getCode());
                 stmt.executeUpdate();
 
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {

@@ -1,84 +1,64 @@
-package controllers.customers;
+package controllers.orders;
 
 import dao.customer.CustomerPhysicalDAO;
-import enums.customer.CustomerPhysicalGender;
-import enums.customer.CustomerStatus;
+import dao.item.ItemDAO;
+import dao.order.cart.CartDAO;
+import dao.order.cart.CartItemDAO;
+import enums.item.ItemStatus;
+import enums.order.checkout.CartStatus;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.ZoneId;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import models.Item;
 import models.customer.CustomerPhysical;
-import views.customers.CustomerPhysicalView;
+import models.order.checkout.Cart;
+import models.order.checkout.CartItem;
+import views.orders.CreateBudgetView;
 
-public class CustomerPhysicalController {
+public class CreateBudgetController {
 
-    CustomerPhysicalView view;
+    CreateBudgetView view;
+    DefaultTableModel modelItemsBudget;
+    DefaultTableModel modelListItems;
 
-    public CustomerPhysicalController(CustomerPhysicalView customerPhysicalView) {
-        this.view = customerPhysicalView;
+    private ArrayList<CartItem> items = new ArrayList<CartItem>();
+
+    public CreateBudgetController(CreateBudgetView createBudgetView) {
+        this.view = createBudgetView;
     }
 
-    public void getCustomers() {
+    public void getItemsToTable() {
         try {
-            CustomerPhysicalDAO dao = new CustomerPhysicalDAO();
+            ItemDAO dao = new ItemDAO();
 
-            List<CustomerPhysical> customers = dao.getAll();
+            List<Item> items = dao.getAll();
 
-            System.out.println(customers.size());
+            System.out.println(items.size());
 
-            DefaultTableModel model = (DefaultTableModel) view.customersTable.getModel();
-            model.setRowCount(0);
+            modelListItems = (DefaultTableModel) view.itemsToSelectTable.getModel();
+            modelListItems.setRowCount(0);
 
-            for (CustomerPhysical customer : customers) {
-                CustomerStatus status = customer.getStatus();
-                CustomerPhysicalGender gender = customer.getGender();
-                String cpf = customer.getCpf();
+            modelItemsBudget = (DefaultTableModel) view.tableBudgetItems.getModel();
+            modelItemsBudget.setRowCount(0);
+
+            for (Item item : items) {
+                ItemStatus status = item.getStatus();
 
                 String statusString = switch (status) {
-                    case CustomerStatus.ACTIVE ->
+                    case ItemStatus.ACTIVE ->
                         "Ativo";
-                    case CustomerStatus.BLOCKED ->
-                        "Bloqueado";
-                    case CustomerStatus.INACTIVE ->
+                    case ItemStatus.INACTIVE ->
                         "Inativo";
                 };
 
-                String genderString = switch (gender) {
-                    case CustomerPhysicalGender.FEMININE ->
-                        "Feminino";
-                    case CustomerPhysicalGender.MASCULINE ->
-                        "Masculino";
-                    case CustomerPhysicalGender.OTHER ->
-                        "Outros";
-                    case CustomerPhysicalGender.NOT_SPECIFIED ->
-                        "Não Especificado";
-                };
-
-                String cpfFormatted = String.format("%s.%s.%s-%s",
-                        cpf.substring(0, 3),
-                        cpf.substring(3, 6),
-                        cpf.substring(6, 9),
-                        cpf.substring(9)
-                );
-
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                String birthDateFormatted = "";
-                if (customer.getBirthDate() != null) {
-                    birthDateFormatted = sdf.format(customer.getBirthDate());
-                }
-
-                model.addRow(new Object[]{
-                    customer.getId(),
-                    customer.getName(),
-                    customer.getEmail(),
-                    cpfFormatted,
-                    birthDateFormatted,
-                    genderString,
+                modelListItems.addRow(new Object[]{
+                    item.getId(),
+                    item.getName(),
+                    item.getPrice(),
+                    item.getPromotionalPrice(),
+                    item.getQuantity(),
                     statusString
                 });
             }
@@ -87,90 +67,173 @@ public class CustomerPhysicalController {
         }
     }
 
-    public void getCustomerById(String id) {
+    public Item getItem(String id) {
+        Item item = null;
         try {
-            CustomerPhysicalDAO dao = new CustomerPhysicalDAO();
+            ItemDAO dao = new ItemDAO();
 
-            CustomerPhysical customer = dao.getById(Integer.parseInt(id));
+            item = dao.getById(Integer.parseInt(id));
 
-            fillFields(customer);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void createCustomer() {
-        try {
-            String name = view.name.getText();
-            String email = view.email.getText();
-            String cpf = view.cpf.getText();
-            String birthDate = view.birthDate.getText();
-            int gender = view.gender.getSelectedIndex() + 1;
-            int status = view.status.getSelectedIndex();
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            LocalDate data = LocalDate.parse(birthDate, formatter);
-            Date utilDate = Date.from(data.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-            CustomerPhysical customer = new CustomerPhysical();
-            customer.setName(name);
-            customer.setEmail(email);
-            customer.setCpf(cpf);
-            customer.setBirthDate(utilDate);
-            customer.setGender(CustomerPhysicalGender.fromCode(gender));
-            customer.setStatus(CustomerStatus.fromCode(status));
-
-            CustomerPhysicalDAO dao = new CustomerPhysicalDAO();
-
-            int id = 0;
-
-            try {
-                id = dao.insert(customer);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(view, "Erro ao inserir Cliente Pessoa Física", "Erro", JOptionPane.ERROR_MESSAGE);
-                return;
+            if (inBudget(item.getId())) {
+                javax.swing.JOptionPane.showMessageDialog(
+                        view,
+                        "Este item já foi adicionado ao orçamento!",
+                        "Item Duplicado",
+                        javax.swing.JOptionPane.WARNING_MESSAGE
+                );
+                return null;
             }
 
-            JOptionPane.showMessageDialog(view, "Cliente inserido com sucesso", "Sucesso!", JOptionPane.INFORMATION_MESSAGE);
-
-            customer.setId(id);
-
-            view.id.setText(String.valueOf(id));
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return item;
     }
 
-    public void fillFields(CustomerPhysical customer) {
-        String cpf = customer.getCpf();
-        String cpfFormatted = String.format("%s.%s.%s-%s",
-                cpf.substring(0, 3),
-                cpf.substring(3, 6),
-                cpf.substring(6, 9),
-                cpf.substring(9)
-        );
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        String birthDateFormatted = "";
-        if (customer.getBirthDate() != null) {
-            birthDateFormatted = sdf.format(customer.getBirthDate());
+    private boolean inBudget(int itemId) {
+        for (int i = 0; i < modelItemsBudget.getRowCount(); i++) {
+            int id = Integer.parseInt(modelItemsBudget.getValueAt(i, 0).toString());
+            if (id == itemId) {
+                return true;
+            }
         }
+        return false;
+    }
+
+    public void fillFields(Item item) {
+        CartItem cartItem = new CartItem();
+        cartItem.setItemId(item.getId());
+        cartItem.setQuantity(1);
+        cartItem.setSubtotal(item.getFinalPrice());
         
-        System.out.println(customer.getStatus().getCode());
+        items.add(cartItem);
+        modelItemsBudget.addRow(new Object[]{
+            item.getId(),
+            item.getName(),
+            item.getFinalPrice(),
+            "1",
+            item.getFinalPrice(),
+            "Remover"
+        });
+        updateTotalBudget();
 
-        view.id.setText(String.valueOf(customer.getId()));
-        view.name.setText(customer.getName());
-        view.email.setText(customer.getEmail());
-        view.cpf.setText(cpfFormatted);
-        view.birthDate.setText(birthDateFormatted);
-        view.gender.setSelectedIndex(customer.getGender().getCode() - 1);
-        view.status.setSelectedIndex(customer.getStatus().getCode());
+    }
 
+    public void removerItem(int row) {
+        if (row >= 0 && row < modelItemsBudget.getRowCount()) {
+            if (row < items.size()) {
+                items.remove(row);
+            }
+
+            modelItemsBudget.removeRow(row);
+
+            updateTotalBudget();
+        }
+    }
+
+    public void updateTotalBudget() {
+        double totalGeral = 0.0;
+
+        for (int i = 0; i < modelItemsBudget.getRowCount(); i++) {
+            Object subtotalObj = modelItemsBudget.getValueAt(i, 4);
+            if (subtotalObj != null) {
+                try {
+                    double subtotal = Double.parseDouble(subtotalObj.toString().replace(",", "."));
+                    totalGeral += subtotal;
+
+                    updateCartItem(i);
+
+                } catch (NumberFormatException ex) {
+                    // Ignora valores inválidos
+                }
+            }
+        }
+
+        view.labelTotalGeral.setText(String.format("Total: R$ %.2f", totalGeral));
+    }
+
+    public double getTotalOrcamento() {
+        double total = 0.0;
+
+        for (int i = 0; i < modelItemsBudget.getRowCount(); i++) {
+            Object subtotalObj = modelItemsBudget.getValueAt(i, 4);
+            if (subtotalObj != null) {
+                try {
+                    total += Double.parseDouble(subtotalObj.toString().replace(",", "."));
+                } catch (NumberFormatException ex) {
+                    // Ignora valores inválidos
+                }
+            }
+        }
+
+        return total;
     }
 
     public void cleanFields() {
+        modelItemsBudget.setRowCount(0);
+        items.clear();
+        updateTotalBudget();
+        view.labelCustomerName.setText("Cliente: Não Selecionado");
+        view.labelTotalGeral.setText("Total: R$ 0,00");
+        view.setCustomerData(null);
+    }
 
+    public ArrayList<CartItem> getItems() {
+        return items;
+    }
+
+    public void updateCartItem(int row) {
+        if (row >= 0 && row < items.size() && row < modelItemsBudget.getRowCount()) {
+            try {
+                // Pega a quantidade da tabela (coluna 3)
+                int quantity = Integer.parseInt(modelItemsBudget.getValueAt(row, 3).toString());
+
+                // Pega o preço unitário da tabela (coluna 2)
+                double finalPrice = Float.parseFloat(
+                        modelItemsBudget.getValueAt(row, 2).toString().replace(",", ".")
+                );
+
+                // Atualiza o CartItem correspondente
+                CartItem cartItem = items.get(row);
+                cartItem.setQuantity(quantity);
+                cartItem.setSubtotal((float) (quantity * finalPrice));
+
+            } catch (NumberFormatException | IndexOutOfBoundsException ex) {
+                System.err.println("Erro ao atualizar CartItem: " + ex.getMessage());
+            }
+        }
+    }
+
+    public boolean saveBudget(String[] customerData) {
+        try {
+            Cart cart = new Cart();
+
+            CustomerPhysicalDAO customerDAO = new CustomerPhysicalDAO();
+            int customerId = Integer.parseInt(customerData[0]);
+            CustomerPhysical customer = customerDAO.getById(customerId);
+
+            cart.setCustomer(customer);
+            cart.setCartStatus(CartStatus.ACTIVE);
+
+            CartDAO cartDAO = new CartDAO();
+            int cartId = cartDAO.insert(cart);
+            cart.setId(cartId);
+
+            cart.setCartItems(items);
+
+            CartItemDAO cartItemDAO = new CartItemDAO();
+
+            for (CartItem cartItem : items) {
+                cartItem.setCartId(cartId);
+                System.out.println(cartItem);
+                cartItemDAO.insert(cartItem);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return true;
     }
 }

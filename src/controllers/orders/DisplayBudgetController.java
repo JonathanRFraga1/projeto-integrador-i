@@ -1,176 +1,141 @@
-package controllers.customers;
+package controllers.orders;
 
+import abstracts.Customer;
 import dao.customer.CustomerPhysicalDAO;
-import enums.customer.CustomerPhysicalGender;
-import enums.customer.CustomerStatus;
+import dao.item.ItemDAO;
+import dao.order.OrderDAO;
+import dao.order.OrderItemDAO;
+import dao.order.cart.CartDAO;
+import dao.order.cart.CartItemDAO;
+import enums.item.ItemStatus;
+import enums.order.OrderStatus;
+import enums.order.checkout.CartStatus;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.ZoneId;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import models.Item;
+import models.Seller;
 import models.customer.CustomerPhysical;
-import views.customers.CustomerPhysicalView;
+import models.order.checkout.Cart;
+import models.order.checkout.CartItem;
+import models.order.Order;
+import models.order.OrderItem;
+import views.orders.DisplayBudgetView;
 
-public class CustomerPhysicalController {
+public class DisplayBudgetController {
 
-    CustomerPhysicalView view;
+    DisplayBudgetView view;
 
-    public CustomerPhysicalController(CustomerPhysicalView customerPhysicalView) {
-        this.view = customerPhysicalView;
+    private ArrayList<CartItem> items = new ArrayList<CartItem>();
+
+    public DisplayBudgetController(DisplayBudgetView createBudgetView) {
+        this.view = createBudgetView;
     }
 
-    public void getCustomers() {
+    public void getBudget(int budgetId) {
         try {
-            CustomerPhysicalDAO dao = new CustomerPhysicalDAO();
+            CartDAO dao = new CartDAO();
+            CustomerPhysicalDAO customerDao = new CustomerPhysicalDAO();
+            CartItemDAO cartItemDAO = new CartItemDAO();
+            ItemDAO itemDAO = new ItemDAO();
 
-            List<CustomerPhysical> customers = dao.getAll();
+            Cart cart = dao.getById(budgetId);
 
-            System.out.println(customers.size());
-
-            DefaultTableModel model = (DefaultTableModel) view.customersTable.getModel();
+            DefaultTableModel model = (DefaultTableModel) view.tableBudgetItems.getModel();
             model.setRowCount(0);
 
-            for (CustomerPhysical customer : customers) {
-                CustomerStatus status = customer.getStatus();
-                CustomerPhysicalGender gender = customer.getGender();
-                String cpf = customer.getCpf();
+            ArrayList<CartItem> items = cartItemDAO.getByCartId(cart.getId());
 
-                String statusString = switch (status) {
-                    case CustomerStatus.ACTIVE ->
-                        "Ativo";
-                    case CustomerStatus.BLOCKED ->
-                        "Bloqueado";
-                    case CustomerStatus.INACTIVE ->
-                        "Inativo";
-                };
+            CustomerPhysical customer = customerDao.getById(cart.getCustomer().getId());
 
-                String genderString = switch (gender) {
-                    case CustomerPhysicalGender.FEMININE ->
-                        "Feminino";
-                    case CustomerPhysicalGender.MASCULINE ->
-                        "Masculino";
-                    case CustomerPhysicalGender.OTHER ->
-                        "Outros";
-                    case CustomerPhysicalGender.NOT_SPECIFIED ->
-                        "Não Especificado";
-                };
+            view.labelCustomerName.setText("Cliente: " + customer.getName());
 
-                String cpfFormatted = String.format("%s.%s.%s-%s",
-                        cpf.substring(0, 3),
-                        cpf.substring(3, 6),
-                        cpf.substring(6, 9),
-                        cpf.substring(9)
-                );
+            float subtotal = 0;
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                String birthDateFormatted = "";
-                if (customer.getBirthDate() != null) {
-                    birthDateFormatted = sdf.format(customer.getBirthDate());
-                }
+            for (CartItem cartItem : items) {
+                subtotal += cartItem.getSubtotal();
+                int itemId = cartItem.getItemId();
+                Item item = itemDAO.getById(itemId);
 
                 model.addRow(new Object[]{
-                    customer.getId(),
-                    customer.getName(),
-                    customer.getEmail(),
-                    cpfFormatted,
-                    birthDateFormatted,
-                    genderString,
-                    statusString
-                });
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void getCustomerById(String id) {
-        try {
-            CustomerPhysicalDAO dao = new CustomerPhysicalDAO();
-
-            CustomerPhysical customer = dao.getById(Integer.parseInt(id));
-
-            fillFields(customer);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void createCustomer() {
-        try {
-            String name = view.name.getText();
-            String email = view.email.getText();
-            String cpf = view.cpf.getText();
-            String birthDate = view.birthDate.getText();
-            int gender = view.gender.getSelectedIndex() + 1;
-            int status = view.status.getSelectedIndex();
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            LocalDate data = LocalDate.parse(birthDate, formatter);
-            Date utilDate = Date.from(data.atStartOfDay(ZoneId.systemDefault()).toInstant());
-
-            CustomerPhysical customer = new CustomerPhysical();
-            customer.setName(name);
-            customer.setEmail(email);
-            customer.setCpf(cpf);
-            customer.setBirthDate(utilDate);
-            customer.setGender(CustomerPhysicalGender.fromCode(gender));
-            customer.setStatus(CustomerStatus.fromCode(status));
-
-            CustomerPhysicalDAO dao = new CustomerPhysicalDAO();
-
-            int id = 0;
-
-            try {
-                id = dao.insert(customer);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(view, "Erro ao inserir Cliente Pessoa Física", "Erro", JOptionPane.ERROR_MESSAGE);
-                return;
+                    item.getId(),
+                    item.getName(),
+                    item.getFinalPrice(),
+                    cartItem.getQuantity(),
+                    cartItem.getSubtotal(),});
             }
 
-            JOptionPane.showMessageDialog(view, "Cliente inserido com sucesso", "Sucesso!", JOptionPane.INFORMATION_MESSAGE);
+            view.labelTotalGeral.setText("Total: R$ " + subtotal);
 
-            customer.setId(id);
+            if (cart.getCartStatus() == CartStatus.CLOSED) {
+                view.createOrderButtom.setEnabled(false);
+            }
 
-            view.id.setText(String.valueOf(id));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void fillFields(CustomerPhysical customer) {
-        String cpf = customer.getCpf();
-        String cpfFormatted = String.format("%s.%s.%s-%s",
-                cpf.substring(0, 3),
-                cpf.substring(3, 6),
-                cpf.substring(6, 9),
-                cpf.substring(9)
-        );
+    public boolean createOrder(int cartId) {
+        try {
+            CartDAO dao = new CartDAO();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        String birthDateFormatted = "";
-        if (customer.getBirthDate() != null) {
-            birthDateFormatted = sdf.format(customer.getBirthDate());
+            CustomerPhysicalDAO customerDao = new CustomerPhysicalDAO();
+
+            CartItemDAO cartItemDAO = new CartItemDAO();
+            ItemDAO itemDAO = new ItemDAO();
+
+            OrderDAO orderDAO = new OrderDAO();
+            OrderItemDAO orderItemDAO = new OrderItemDAO();
+
+            Cart cart = dao.getById(cartId);
+
+            Order order = new Order();
+            order.setCartId(cartId);
+            order.setCustomer(cart.getCustomer());
+            Seller seller = new Seller();
+            seller.setId(1);
+            order.setSeller(seller);
+
+            ArrayList<CartItem> cartItems = cartItemDAO.getByCartId(cartId);
+            ArrayList<OrderItem> orderItems = new ArrayList<>();
+
+            float subtotal = 0;
+
+            for (CartItem cartItem : cartItems) {
+                subtotal += cartItem.getSubtotal();
+                OrderItem orderItem = new OrderItem();
+                
+                Item item = itemDAO.getById(cartItem.getItemId());
+                
+                orderItem.setItemId(cartItem.getItemId());
+                orderItem.setItemName(item.getName());
+                orderItem.setItemPrice(item.getFinalPrice());
+                orderItem.setQuantity(cartItem.getQuantity());
+                
+                orderItems.add(orderItem);
+            }
+
+            order.setTotalAmount(subtotal);
+
+            order.setStatus(OrderStatus.PAID);
+
+            int orderId = orderDAO.insert(order);
+            
+            for (OrderItem orderItem: orderItems) {
+                orderItem.setOrderId(orderId);
+                orderItemDAO.insert(orderItem);
+            }
+            
+            cart.setCartStatus(CartStatus.CLOSED);
+            
+            dao.update(cart);
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
-        
-        System.out.println(customer.getStatus().getCode());
 
-        view.id.setText(String.valueOf(customer.getId()));
-        view.name.setText(customer.getName());
-        view.email.setText(customer.getEmail());
-        view.cpf.setText(cpfFormatted);
-        view.birthDate.setText(birthDateFormatted);
-        view.gender.setSelectedIndex(customer.getGender().getCode() - 1);
-        view.status.setSelectedIndex(customer.getStatus().getCode());
-
-    }
-
-    public void cleanFields() {
-
+        return true;
     }
 }

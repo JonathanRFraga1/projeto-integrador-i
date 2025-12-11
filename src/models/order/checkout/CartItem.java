@@ -1,6 +1,7 @@
 package models.order.checkout;
 
 public class CartItem {
+
     private int id;
     private int cartId;
     private int itemId;
@@ -61,5 +62,16 @@ public class CartItem {
 
     public void calculateSubtotal() {
 
+    }
+
+    @Override
+    public String toString() {
+        return "CartItem{"
+                + "id=" + id
+                + ", cartId=" + cartId
+                + ", itemId=" + itemId
+                + ", quantity=" + quantity
+                + ", subtotal=" + subtotal
+                + '}';
     }
 }

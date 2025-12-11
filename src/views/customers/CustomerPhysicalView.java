@@ -132,7 +132,7 @@ public class CustomerPhysicalView extends javax.swing.JInternalFrame {
         }
         cpf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cpfActionPerformed(evt);
+                //cpfActionPerformed(evt);
             }
         });
 

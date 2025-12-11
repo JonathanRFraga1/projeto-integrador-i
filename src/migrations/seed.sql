@@ -1,3 +1,6 @@
+INSERT IGNORE INTO sellers (id, cnpj, name)
+VALUES
+    (1, '12345678000199', 'Marcos Andrade'),
 
 INSERT IGNORE INTO customers_legal (id, name, email, cnpj, responsible_name, status)
 VALUES

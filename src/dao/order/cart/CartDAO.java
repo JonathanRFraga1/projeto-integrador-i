@@ -29,9 +29,10 @@ public class CartDAO extends GenericDAO<Cart> {
         };
 
         customer.setId(rs.getInt("customer_id"));
+        cart.setId(rs.getInt("id"));
         cart.setCustomer(customer);
 
-        cart.setCartStatus(CartStatus.fromCode(rs.getInt("cart_status")));
+        cart.setCartStatus(CartStatus.fromCode(rs.getInt("status")));
 
         return cart;
     }
@@ -40,7 +41,7 @@ public class CartDAO extends GenericDAO<Cart> {
     public int insert(Cart cart) throws SQLException {
         try {
             connect();
-            String sql = "INSERT INTO carts (customer_id, customer_type, cart_status) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO carts (customer_id, customer_type, status) VALUES (?, ?, ?)";
 
             Customer customer = cart.getCustomer();
             int customerType;
@@ -75,10 +76,10 @@ public class CartDAO extends GenericDAO<Cart> {
     public void update(Cart cart) throws SQLException {
         try {
             connect();
-            String sql = "UPDATE carts SET cart_status = ? WHERE customer_id = ?";
+            String sql = "UPDATE carts SET status = ? WHERE id = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setInt(1, cart.getCartStatus().getCode());
-                stmt.setInt(2, cart.getCustomer().getId());
+                stmt.setInt(2, cart.getId());
                 stmt.executeUpdate();
             }
         } finally {
